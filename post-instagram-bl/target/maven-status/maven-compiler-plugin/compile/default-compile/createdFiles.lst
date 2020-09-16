@@ -1,0 +1,8 @@
+it\sparks\postinstagram\bl\job\InstagramJob.class
+it\sparks\postinstagram\bl\service\PostService.class
+it\sparks\postinstagram\bl\job\EventJob.class
+it\sparks\postinstagram\bl\service\ImageService.class
+it\sparks\postinstagram\bl\BusinessLogic$Tag.class
+it\sparks\postinstagram\bl\BusinessLogic$1.class
+it\sparks\postinstagram\bl\BusinessLogic$2.class
+it\sparks\postinstagram\bl\BusinessLogic.class

@@ -1,0 +1,4 @@
+it\sparks\postinstagram\utilities\costants\InstagramConst.class
+it\sparks\postinstagram\utilities\logging\LOG.class
+it\sparks\postinstagram\utilities\exceptions\InstagramException.class
+it\sparks\postinstagram\utils\InstagramUtils.class

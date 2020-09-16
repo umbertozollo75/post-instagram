@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <groupId>it.sparks.postinstagram</groupId>
+    <artifactId>post-instagram</artifactId>
+    <packaging>pom</packaging>
+    <name>post-instagram</name>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>1.8</jdk.version>
+        <post-instagram.nome>post-instagram</post-instagram.nome>
+    </properties>
+
+    <modules>
+        <module>post-instagram-app</module>
+        <module>post-instagram-bl</module>
+        <module>post-instagram-db</module>
+        <module>post-instagram-utilities</module>
+    </modules>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+            </activation>
+            <properties>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
