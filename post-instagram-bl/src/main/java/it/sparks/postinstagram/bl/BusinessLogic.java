@@ -217,8 +217,8 @@ public class BusinessLogic {
         for (Tag tag: coordTags) {
 
             if (
-                (t.coordX - (t.coordX * 10 / 100))  >= tag.coordX && tag.coordX <= (t.coordX + (t.coordX * 10 / 100))
-                && (t.coordY - (t.coordY * 10 / 100))  >= tag.coordY && tag.coordY <= (t.coordY + (t.coordY * 10 / 100))
+                 tag.coordX >= (t.coordX - (t.coordX * 10 / 100))  && tag.coordX <= (t.coordX + (t.coordX * 10 / 100))
+                && tag.coordY >= (t.coordY - (t.coordY * 10 / 100))  && tag.coordY <= (t.coordY + (t.coordY * 10 / 100))
             ) {
                 return true;
             }
