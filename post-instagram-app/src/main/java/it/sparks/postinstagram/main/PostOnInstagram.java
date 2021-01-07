@@ -3,8 +3,8 @@ package it.sparks.postinstagram.main;
 import it.sparks.postinstagram.bl.BusinessLogic;
 import it.sparks.postinstagram.utilities.costants.InstagramConst;
 import it.sparks.postinstagram.utilities.logging.LOG;
-import it.sparks.postinstagram.bl.InstagramLoginUtils;
-import it.sparks.postinstagram.utils.InstagramUtils;
+import it.sparks.postinstagram.examples.InstagramLoginUtils;
+import it.sparks.postinstagram.utilities.InstagramUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,27 +20,27 @@ public class PostOnInstagram {
 
         //Logger.getLogger("org.brunocvcunha.instagram4j").setLevel(Level.OFF);
 
-        String POST_ALBUM = "N";
+        String POST_ALBUM = "S";
         String PATH = InstagramConst.PATH_IG;
-        String componente = "verticali"; // "orizzontali" "quadrate"
+        String componente = "orizzontali"; // "verticali"  "quadrate"
 
-        String caption = "Giornata GLAMOUR..." + A_CAPO;
-        //caption += "Grazie: @associazione_tus" + A_CAPO;
-        //caption += "Model: @celeste_2893" + A_CAPO;
+        String caption = "Evento 20 dec 2020 [1/2]" + A_CAPO;
+        //caption += "Grazie: @morenobaggio @associazione_tus" + A_CAPO;
+        //caption += "Model: @vielbc_ @valerialariccia__" + A_CAPO;
         caption += "Ph: @umbertozollo" + A_CAPO;
         caption +=  "." + A_CAPO;
         caption +=  "." + A_CAPO;
         caption +=  "." + A_CAPO;
-        caption +=  "." + A_CAPO;
         caption += "#foto #portait #portaitphotography #photoart #fotoinstudio #turingirl #model #modellaitaliana " +
-                "#glamour #glamourfoto #glamourfotography #glamourphoto #glamourphotography";
+                "#glamour #glamourfoto #glamourfotography #glamourphoto #glamourphotography #d750 #d750nikon #777luckyfish";
 
         BusinessLogic bl = new BusinessLogic();
 
-        // Login to instagram
         try {
-            initializeProperties();
+            InstagramUtils.loadInstagramProperties();
+            LOG.info("Default Locale = " + Locale.getDefault().getDisplayName());
 
+            // Login to instagram
             InstagramLoginUtils.loginInstagram();
             LOG.info("Login effettuato...");
 
@@ -59,22 +59,6 @@ public class PostOnInstagram {
         } finally {
             LOG.traceOut();
         }
-    }
-
-    private static void initializeProperties() throws IOException {
-        LOG.traceIn();
-
-        InstagramUtils.loadInstagramProperties();
-        LOG.info("Default Locale = " + Locale.getDefault().getDisplayName());
-/*
-        long now = System.currentTimeMillis();
-        InstagramUtils.setProperty("START.MS", Long.toString(now));
-        Date today = new Date(now);
-
-        InstagramUtils.setProperty("START.YMD", new SimpleDateFormat("yyyyMMdd").format(today));
-        InstagramUtils.setProperty("START.HMS", new SimpleDateFormat("HHmmss").format(today));
- */
-        LOG.traceOut();
     }
 
 }

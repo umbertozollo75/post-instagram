@@ -1,7 +1,7 @@
 package it.sparks.postinstagram.examples;
 
 import it.sparks.postinstagram.utilities.logging.LOG;
-import it.sparks.postinstagram.utils.InstagramUtils;
+import it.sparks.postinstagram.utilities.InstagramUtils;
 import org.brunocvcunha.instagram4j.Instagram4j;
 import org.brunocvcunha.instagram4j.requests.InstagramSearchUsernameRequest;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResult;
@@ -37,7 +37,6 @@ public class PostOnInstagramUser {
 
         try {
             InstagramUtils.loadInstagramProperties();
-            //InstagramUtils.initLogging();
 
             LOG.info("Default Locale = " + Locale.getDefault().getDisplayName());
 

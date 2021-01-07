@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DatabaseSettingsState">
+    <option name="database" value="agenda" />
+    <option name="databaseDriver" value="Mysql-5.1.47" />
+    <option name="databaseDriverToJarPath">
+      <map>
+        <entry key="Mysql-5.1.47" value="$USER_HOME$/.Jpa Support/driver_vendor/Mysql-5.1.47.jar" />
+        <entry key="Mysql-6.0.6" value="$USER_HOME$/.Jpa Support/driver_vendor/Mysql-6.0.6.jar" />
+      </map>
+    </option>
+    <option name="requireSavePassword" value="false" />
+    <option name="url" value="jdbc:mysql://localhost:3306/agenda" />
+    <option name="username" value="sparks" />
+  </component>
+</project>
