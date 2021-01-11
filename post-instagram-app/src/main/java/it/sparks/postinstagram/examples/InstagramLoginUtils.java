@@ -11,14 +11,18 @@ import org.brunocvcunha.instagram4j.requests.payload.InstagramGetChallengeResult
 import org.brunocvcunha.instagram4j.requests.payload.InstagramLoginResult;
 import org.brunocvcunha.instagram4j.requests.payload.InstagramSelectVerifyMethodResult;
 
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Scanner;
 
 public class InstagramLoginUtils {
 
     public static void loginInstagram() throws Exception {
+
         String username = InstagramUtils.getProperty("instagram.user");
-        String password = InstagramUtils.getProperty("instagram.pw");
+
+        byte[] encodedBytes = Base64.getDecoder().decode(InstagramUtils.getProperty("instagram.pw"));
+        String password = new String(encodedBytes);
 
         // Login to instagram
         Instagram4j instagram4j = Instagram4j.builder().username(username).password(password).build();

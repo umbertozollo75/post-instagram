@@ -1,7 +1,7 @@
+it\sparks\postinstagram\bl\Tag.class
 it\sparks\postinstagram\utilities\costants\InstagramConst.class
 it\sparks\postinstagram\entity\Image.class
 it\sparks\postinstagram\examples\PostOnInstagramTag.class
-it\sparks\postinstagram\bl\BusinessLogic$Tag.class
 it\sparks\postinstagram\examples\InstagramLoginUtils.class
 it\sparks\postinstagram\main\PostOnInstagram.class
 it\sparks\postinstagram\bl\BusinessLogic.class

@@ -20,9 +20,6 @@ public class Tag implements Serializable {
     @JoinColumn(name = "idImage")
     private Image image;
 
-    @Column(name = "originalNameFile")
-    private String originalNameFile;
-
     @Column(name = "tag")
     private String tag;
 

@@ -7,37 +7,42 @@ import it.sparks.postinstagram.utilities.logging.LOG;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class InstagramJob implements Job {
 
     public void execute(JobExecutionContext context) {
         LOG.traceIn();
 
-        BusinessLogic bl = new BusinessLogic();
-
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("postinstagramPU");
         EntityManager eman = emf.createEntityManager();
 
+        ZoneId zone = ZoneId.of("Europe/Rome");
+        LocalDateTime instant = LocalDateTime.now(zone);
+        LocalDateTime instantBefore = instant.minusMinutes(5);
+        LocalDateTime instantAfter = instant.plusMinutes(10);
+
         try {
-            long now = System.currentTimeMillis();
-            long before = now - TimeUnit.MINUTES.toMillis(5);
-            long after = now + TimeUnit.MINUTES.toMillis(10);
-
-            Query query = eman.createNamedQuery("Post.findPostByDate");
-            query.setParameter("start", new Timestamp(before), TemporalType.TIMESTAMP);
-            query.setParameter("end", new Timestamp(after), TemporalType.TIMESTAMP);
-
+            String sql = "SELECT * FROM post p WHERE p.dateStart BETWEEN '" + instantBefore + "' AND '" + instantAfter + "'";
+            LOG.info("SQL: " + sql);
+            Query query = eman.createNativeQuery(sql, Post.class);
             List<Post> posts = query.getResultList();
-
-            for (Post p : posts) {
+            LOG.debug("SIZE: " + posts.size());
+            for (Post p: posts) {
                 LOG.debug("IDPOST: " + p.getIdPost());
                 LOG.debug("DESCRIZIONE: " + p.getDescrizionePost());
                 LOG.debug("DATE: " + p.getDateStart());
+
+                BusinessLogic bl = new BusinessLogic();
+
+                bl.loginInstagram();
 
                 List<Image> images = p.getImages();
                 if (p.getAlbum() == 1) {
@@ -46,7 +51,6 @@ public class InstagramJob implements Job {
                     bl.postSingleDB(images, p.getDescrizionePost());
                 }
             }
-
         } catch (IOException ioex) {
             LOG.error("" + "Errore: " + ioex.getMessage(), ioex);
             ioex.printStackTrace();

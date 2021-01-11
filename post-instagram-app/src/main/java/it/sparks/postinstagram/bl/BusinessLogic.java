@@ -1,6 +1,7 @@
 package it.sparks.postinstagram.bl;
 
 import it.sparks.postinstagram.entity.Image;
+import it.sparks.postinstagram.examples.InstagramLoginUtils;
 import it.sparks.postinstagram.utilities.InstagramUtils;
 import it.sparks.postinstagram.utilities.logging.LOG;
 import org.apache.commons.io.FileUtils;
@@ -17,6 +18,9 @@ import org.brunocvcunha.instagram4j.requests.payload.InstagramSearchUsernameResu
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class BusinessLogic {
@@ -36,8 +40,27 @@ public class BusinessLogic {
     public BusinessLogic() {
     }
 
+    public void loginInstagram() {
+        try {
+            InstagramUtils.loadInstagramProperties();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LOG.info("Default Locale = " + Locale.getDefault().getDisplayName());
+
+        // Login to instagram
+        try {
+            InstagramLoginUtils.loginInstagram();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LOG.info("Login effettuato...");
+    }
+
     public void postAlbumDB(List<Image> images, String caption) throws IOException {
         LOG.traceIn();
+
+        Instagram4j instagram4j = InstagramUtils.getInstagram4j();
 
         for (Image i: images) {
             writeImageIntoTmpPath(i);
@@ -46,30 +69,37 @@ public class BusinessLogic {
         List<File> fileImages = getImagesInFolder(new File(TMP_PATH));
         LOG.debug("IMAGES: " + images.size());
 
-        InstagramUploadAlbumRequest album = new InstagramUploadAlbumRequest(fileImages, caption);
-        InstagramConfigureAlbumResult result = InstagramUtils.getInstagram4j().sendRequest(album);
-        LOG.debug("RESULT: " + result);
+        if (fileImages != null) {
+            InstagramUploadAlbumRequest album = new InstagramUploadAlbumRequest(fileImages, caption);
+            InstagramConfigureAlbumResult result = instagram4j.sendRequest(album);
+            LOG.debug("RESULT: " + result);
 
-/*
-        List<InstagramCarouselMediaItem> licmi = result.getMedia().getCarousel_media();
-        int i = 0;
-        for (InstagramCarouselMediaItem x : licmi) {
+            List<InstagramCarouselMediaItem> licmi = result.getMedia().getCarousel_media();
+            for (int i = 0; i < licmi.size(); i++) {
 
-            String[] tags = (tagImages.getProperty(String.format("%02d", i++))).split(";");
+                InstagramEditMediaRequest iemr = new InstagramEditMediaRequest(licmi.get(i).getPk(), "");
 
-            InstagramEditMediaRequest iemr = new InstagramEditMediaRequest(x.getPk(), "");
-            InstagramEditMediaRequest.UserTags userTags = iemr.new UserTags();
-            for (String tag: tags) {
-                addTag(tag, iemr, userTags);
+                List<String> stringTags = new ArrayList<>();
+                List<it.sparks.postinstagram.entity.Tag> tags = images.get(i).getTags();
+                for (it.sparks.postinstagram.entity.Tag t : tags) {
+                    stringTags.add(t.getTag());
+                }
+                InstagramEditMediaRequest.UserTags userTags = iemr.new UserTags();
+                for (String tag : stringTags) {
+                    addTag(tag, iemr, userTags);
+                }
+                iemr.setUserTags(userTags);
+
+                instagram4j.sendRequest(iemr);
             }
-            iemr.setUserTags(userTags);
-            InstagramUtils.getInstagram4j().sendRequest(iemr);
+
+            Files.walk(Paths.get(TMP_PATH))
+                .filter(Files::isRegularFile)
+                .filter(f -> f.toString().endsWith(".jpg"))
+                .map(Path::toFile)
+                .forEach(File::delete);
         }
 
-        for (File f : fileImages) {
-            FileUtils.forceDelete(f);
-        }
-*/
         LOG.traceOut();
     }
 
@@ -87,7 +117,6 @@ public class BusinessLogic {
             for (it.sparks.postinstagram.entity.Tag t: tags) {
                 stringTags.add(t.getTag());
             }
-
             InstagramEditMediaRequest iemr = new InstagramEditMediaRequest(icmr.getMedia().getPk(), "");
             InstagramEditMediaRequest.UserTags userTags = iemr.new UserTags();
             for (String tag: stringTags) {
@@ -96,9 +125,13 @@ public class BusinessLogic {
             iemr.setUserTags(userTags);
 
             instagram4j.sendRequest(iemr);
-
-            //deleteImageIntoTmpPath(i);
         }
+
+        Files.walk(Paths.get(TMP_PATH))
+                .filter(Files::isRegularFile)
+                .filter(f -> f.toString().endsWith(".jpg"))
+                .map(Path::toFile)
+                .forEach(File::delete);
 
         LOG.traceOut();
     }
@@ -106,32 +139,31 @@ public class BusinessLogic {
     public void postAlbum(File folder, String caption, Properties tagImages) throws IOException {
         LOG.traceIn();
 
-        List<File> images;
+        List<File> images ;
         images = getImagesInFolder(folder);
-        LOG.debug("IMAGES: " + images.size());
+        if (images != null) {
+            LOG.debug("IMAGES: " + images.size());
+            InstagramUploadAlbumRequest album = new InstagramUploadAlbumRequest(images, caption);
+            InstagramConfigureAlbumResult result = InstagramUtils.getInstagram4j().sendRequest(album);
+            LOG.debug("RESULT: " + result);
+            List<InstagramCarouselMediaItem> licmi = result.getMedia().getCarousel_media();
+            int i = 0;
+            for (InstagramCarouselMediaItem x : licmi) {
 
-        InstagramUploadAlbumRequest album = new InstagramUploadAlbumRequest(images, caption);
-        InstagramConfigureAlbumResult result = InstagramUtils.getInstagram4j().sendRequest(album);
-        LOG.debug("RESULT: " + result);
+                String[] tags = (tagImages.getProperty(String.format("%02d", i++))).split(";");
 
-        List<InstagramCarouselMediaItem> licmi = result.getMedia().getCarousel_media();
-        int i = 0;
-        for (InstagramCarouselMediaItem x : licmi) {
-
-            String[] tags = (tagImages.getProperty(String.format("%02d", i++))).split(";");
-
-            InstagramEditMediaRequest iemr = new InstagramEditMediaRequest(x.getPk(), "");
-            InstagramEditMediaRequest.UserTags userTags = iemr.new UserTags();
-            for (String tag: tags) {
-                addTag(tag, iemr, userTags);
+                InstagramEditMediaRequest iemr = new InstagramEditMediaRequest(x.getPk(), "");
+                InstagramEditMediaRequest.UserTags userTags = iemr.new UserTags();
+                for (String tag : tags) {
+                    addTag(tag, iemr, userTags);
+                }
+                iemr.setUserTags(userTags);
+                InstagramUtils.getInstagram4j().sendRequest(iemr);
             }
-            iemr.setUserTags(userTags);
-            InstagramUtils.getInstagram4j().sendRequest(iemr);
         }
+
         LOG.traceOut();
     }
-
-
 
     public void postSingle(File folder, String caption, Properties tagImages) throws IOException {
         LOG.traceIn();
@@ -147,8 +179,6 @@ public class BusinessLogic {
 
         int i = 0;
         for (File image : Objects.requireNonNull(folder.listFiles(jpgFilefilter))) {
-            String nomeFile = image.getName();
-            String nomeFileWithoutExt = nomeFile.substring(0, nomeFile.lastIndexOf("."));
 
             InstagramUploadPhotoRequest iupr = new InstagramUploadPhotoRequest(image, caption);
             Instagram4j instagram4j = InstagramUtils.getInstagram4j();
@@ -167,6 +197,7 @@ public class BusinessLogic {
             iemr.setUserTags(userTags);
             InstagramUtils.getInstagram4j().sendRequest(iemr);
         }
+
         LOG.traceOut();
     }
 
@@ -198,34 +229,18 @@ public class BusinessLogic {
     }
 
     private File writeImageIntoTmpPath(Image image) throws IOException {
+        LOG.traceIn();
 
-        String path = TMP_PATH + File.separator + image.getIdImage() + "_" + image.getOriginalNameFile();
-        File fileImage = new File(path);
+        File fileImage = new File(TMP_PATH + File.separator + image.getOriginalNameFile());
 
         InputStream is = new ByteArrayInputStream(image.getImageBinary());
         BufferedImage img = ImageIO.read(is);
         ImageIO.write(img, "jpg", fileImage);
 
+        LOG.traceOut();
         return fileImage;
     }
-    private void deleteImageIntoTmpPath(Image image) throws IOException {
 
-        String path = TMP_PATH + File.separator + image.getIdImage() + "_" + image.getOriginalNameFile();
-
-        FileUtils.forceDelete(new File(path));
-    }
-
-
-    private List<File> writeIntoTmpPath(List<Image> images) throws IOException {
-
-        for (Image i : images) {
-            FileUtils.writeByteArrayToFile(new File(TMP_PATH + File.separator + i.getIdImage() + "_" + i.getOriginalNameFile()), i.getImageBinary());
-        }
-        List<File> fileImages = getImagesInFolder(new File(TMP_PATH));
-        LOG.debug("IMAGES: " + images.size());
-
-        return fileImages;
-    }
     private List<File> getImagesInFolder(File folder) {
         LOG.traceIn();
 
@@ -246,8 +261,8 @@ public class BusinessLogic {
             LOG.info("Numero immagini superiore a 10!");
             return null;
         }
-        LOG.traceOut();
 
+        LOG.traceOut();
         return images;
     }
 
@@ -307,13 +322,4 @@ public class BusinessLogic {
         return false;
     }
 
-    protected static class Tag {
-        float coordX;
-        float coordY;
-
-        public Tag(float coordX, float coordY) {
-            this.coordX = coordX;
-            this.coordY = coordY;
-        }
-    }
 }
