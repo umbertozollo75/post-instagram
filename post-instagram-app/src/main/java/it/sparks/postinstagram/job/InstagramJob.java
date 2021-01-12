@@ -42,8 +42,6 @@ public class InstagramJob implements Job {
 
                 BusinessLogic bl = new BusinessLogic();
 
-                bl.loginInstagram();
-
                 List<Image> images = p.getImages();
                 if (p.getAlbum() == 1) {
                     bl.postAlbumDB(images, p.getDescrizionePost());

@@ -40,23 +40,6 @@ public class BusinessLogic {
     public BusinessLogic() {
     }
 
-    public void loginInstagram() {
-        try {
-            InstagramUtils.loadInstagramProperties();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        LOG.info("Default Locale = " + Locale.getDefault().getDisplayName());
-
-        // Login to instagram
-        try {
-            InstagramLoginUtils.loginInstagram();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        LOG.info("Login effettuato...");
-    }
-
     public void postAlbumDB(List<Image> images, String caption) throws IOException {
         LOG.traceIn();
 
