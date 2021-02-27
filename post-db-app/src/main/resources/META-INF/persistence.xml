@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit name="postinstagramPU" transaction-type="RESOURCE_LOCAL">
+
+        <class>it.sparks.postdb.entity.Tag</class>
+        <class>it.sparks.postdb.entity.Image</class>
+        <class>it.sparks.postdb.entity.Post</class>
+
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/agenda" />
+            <property name="javax.persistence.jdbc.user" value="sparks" />
+            <property name="javax.persistence.jdbc.password" value="sparks" />
+            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="eclipselink.ddl-generation.output-mode" value="database" />
+            <property name="eclipselink.logging.level" value="FINE" />
+        </properties>
+
+    </persistence-unit>
+</persistence>

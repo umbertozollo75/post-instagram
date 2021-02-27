@@ -11,14 +11,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="post-instagram-app" />
+        <module name="post-db-app" />
         <module name="post-instagram-web" />
+        <module name="post-utilities-app" />
+        <module name="post-facebook-app" />
+        <module name="post-twitter-app" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="8">
-      <module name="post-instagram-bl" target="1.8" />
-      <module name="post-instagram-db" target="1.5" />
-      <module name="post-instagram-utilities" target="1.8" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="8" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
